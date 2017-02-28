@@ -382,7 +382,7 @@ def main():
 
         if state == 'hard':
             if not os.path.isabs(b_src):
-                module.fail_json(msg="absolute paths are required")
+                module.fail_json(msg=("absolute paths are required - %s" % b_src))
         elif prev_state == 'directory':
             if not force:
                 module.fail_json(path=path, msg='refusing to convert between %s and %s for %s' % (prev_state, state, path))
