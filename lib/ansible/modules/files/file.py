@@ -399,13 +399,19 @@ def main():
             if b_old_src != b_src:
                 changed = True
         elif prev_state == 'hard':
+            # check here fails if we don't disable the hard type
+            # - b_src is fucked (basename'd... just the filename) at this point for some reason
             if not (state == 'hard' and os.stat(b_path).st_ino == os.stat(b_src).st_ino):
                 changed = True
                 if not force:
                     module.fail_json(dest=path, src=src, msg='Cannot link, different hard link exists at destination')
         elif prev_state in ('file', 'directory'):
-            changed = True
-            if not force:
+            # we've disabled the hard type, so the check above isn't working.
+            # see if the link is already ok
+            if os.stat(b_path).st_ino == os.stat(b_src).st_ino:
+                pass
+            elif not force:
+                changed = True
                 module.fail_json(dest=path, src=src, msg='Cannot link, %s exists at destination' % prev_state)
         else:
             module.fail_json(dest=path, src=src, msg='unexpected position reached')
