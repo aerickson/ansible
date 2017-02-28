@@ -150,9 +150,12 @@ def get_state(b_path):
             return 'link'
         elif os.path.isdir(b_path):
             return 'directory'
-        # AJE: hard links are just files...
-        #elif os.stat(b_path).st_nlink > 1:
-        #    return 'hard'
+        # AJE: hard links are just files... disabling this block causes issues:
+        # - hard links aren't detected as being correct and need to be force created
+        #   - perhaps not that bad... it's how 'ln' on unix works...
+        #     - is counter to how ansible works for symlinks...
+        elif os.stat(b_path).st_nlink > 1:
+           return 'hard'
         else:
             # could be many other things, but defaulting to file
             return 'file'
