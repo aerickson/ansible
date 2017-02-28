@@ -388,7 +388,7 @@ def main():
             elif len(os.listdir(b_path)) > 0:
                 # refuse to replace a directory that has files in it
                 module.fail_json(path=path, msg='the directory %s is not empty, refusing to convert it' % path)
-        elif prev_state in ('file', 'hard') and not force:
+        elif prev_state == 'file' and not force:
             module.fail_json(path=path, msg='refusing to convert between %s and %s for %s' % (prev_state, state, path))
 
         if prev_state == 'absent':
