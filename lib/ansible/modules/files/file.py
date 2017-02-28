@@ -155,8 +155,9 @@ def get_state(b_path):
         # - hard links aren't detected as being correct and need to be force created
         #   - perhaps not that bad... it's how 'ln' on unix works...
         #     - is counter to how ansible works for symlinks...
-        elif os.stat(b_path).st_nlink > 1:
-           return 'hard'
+        #       - resolution: handle this later on...
+        #elif os.stat(b_path).st_nlink > 1:
+        #   return 'hard'
         else:
             # could be many other things, but defaulting to file
             return 'file'
