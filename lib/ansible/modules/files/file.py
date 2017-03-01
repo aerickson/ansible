@@ -201,6 +201,8 @@ def main():
 
     params = module.params
     state = params['state']
+    aje_state = state
+    #module.fail_json(msg="aje testing : %s" % (state))
     recurse = params['recurse']
     force = params['force']
     diff_peek = params['diff_peek']
@@ -231,11 +233,17 @@ def main():
     # default to 'current' when it exists.
     if state is None:
         if prev_state != 'absent':
-            state = prev_state
+            # AJE: big fucking problem... make copy pass something that this looks at or do a check here?
+           # - how do we know if it should be file or hard?
+           # if
+            #state = prev_state
+           state = 'file'
         elif recurse:
             state = 'directory'
         else:
             state = 'file'
+
+    aje_state2 = state
 
     # source is both the source of a symlink or an informational passing of the src for a template module
     # or copy module, even if this module never uses it, it is needed to key off some things
@@ -376,8 +384,9 @@ def main():
             module.fail_json(path=path, src=src, msg='src file does not exist, use "force=yes" if you really want to create the link: %s' % absrc)
 
         if state == 'hard':
+#          module.fail_json(msg="aje testing : %s %s" % (aje_state, aje_state2))
             if not os.path.isabs(b_src):
-                module.fail_json(msg="absolute paths are required")
+                module.fail_json(msg="absolute paths are required", aje_state=state)
         elif prev_state == 'directory':
             if not force:
                 module.fail_json(path=path, msg='refusing to convert between %s and %s for %s' % (prev_state, state, path))

@@ -379,6 +379,7 @@ def main():
     res_args = dict(
         dest=dest, src=src, md5sum=md5sum_src, checksum=checksum_src, changed=changed
     )
+    #res_args['state'] = 'file'
     if backup_file:
         res_args['backup_file'] = backup_file
 
