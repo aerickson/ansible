@@ -151,13 +151,6 @@ def get_state(b_path):
             return 'link'
         elif os.path.isdir(b_path):
             return 'directory'
-        # AJE: hard links are just files... disabling this block causes issues:
-        # - hard links aren't detected as being correct and need to be force created
-        #   - perhaps not that bad... it's how 'ln' on unix works...
-        #     - is counter to how ansible works for symlinks...
-        #       - resolution: handle this later on...
-        #elif os.stat(b_path).st_nlink > 1:
-        #   return 'hard'
         else:
             # could be many other things, but defaulting to file
             return 'file'
@@ -401,16 +394,8 @@ def main():
                 diff['before']['src'] = to_native(b_old_src, errors='strict')
                 diff['after']['src'] = src
                 changed = True
-        elif prev_state == 'hard':
-            # check here fails if we don't disable the hard type
-            # - b_src is fucked (basename'd... just the filename) at this point for some reason
-            if not (state == 'hard' and os.stat(b_path).st_ino == os.stat(b_src).st_ino):
-                changed = True
-                if not force:
-                    module.fail_json(dest=path, src=src, msg='Cannot link, different hard link exists at destination')
         elif prev_state in ('file', 'directory'):
-            # we've disabled the hard type, so the check above isn't working.
-            # see if the link is already ok
+            # continue if the file is a hard link and already correct
             if os.stat(b_path).st_ino == os.stat(b_src).st_ino:
                 pass
             elif not force:
