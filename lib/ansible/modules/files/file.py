@@ -398,9 +398,10 @@ def main():
             # continue if the file is a hard link and already correct
             if os.stat(b_path).st_ino == os.stat(b_src).st_ino:
                 pass
-            elif not force:
+            else
                 changed = True
-                module.fail_json(dest=path, src=src, msg='Cannot link, %s exists at destination' % prev_state)
+                if not force:
+                    module.fail_json(dest=path, src=src, msg='Cannot link, %s exists at destination' % prev_state)
         else:
             module.fail_json(dest=path, src=src, msg='unexpected position reached')
 
