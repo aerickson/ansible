@@ -66,10 +66,10 @@
   register: diff_result
 
 - name: verify templated file matches known good
-  assert:  
-    that: 
-        - 'diff_result.stdout == ""' 
-        - "diff_result.rc == 0" 
+  assert:
+    that:
+        - 'diff_result.stdout == ""'
+        - "diff_result.rc == 0"
 
 # VERIFY MODE
 
