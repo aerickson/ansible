@@ -151,6 +151,8 @@ def get_state(b_path):
             return 'link'
         elif os.path.isdir(b_path):
             return 'directory'
+        elif os.stat(b_path).st_nlink > 1:
+            return 'hard'
         else:
             # could be many other things, but defaulting to file
             return 'file'
@@ -394,7 +396,7 @@ def main():
                 diff['before']['src'] = to_native(b_old_src, errors='strict')
                 diff['after']['src'] = src
                 changed = True
-        elif prev_state in ('file', 'directory'):
+        elif prev_state in ('file', 'hard', 'directory'):
             # continue if the file is a hard link and already correct
             if os.stat(b_path).st_ino == os.stat(b_src).st_ino:
                 pass
